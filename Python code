@@ -1,0 +1,39 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv("ad_campaign_data.csv")
+
+df["CTR"] = df["Clicks"] / df["Impressions"]
+df["EngagementRate"] = df["Engagements"] / df["Impressions"]
+df["CPC"] = df["Spend"] / df["Clicks"]
+df["ROI"] = (df["Revenue"] - df["Spend"]) / df["Spend"]
+
+grouped = df.groupby("Platform").agg({
+    "Impressions": "sum",
+    "Reach": "sum",
+    "Clicks": "sum",
+    "Engagements": "sum",
+    "Spend": "sum",
+    "Revenue": "sum",
+    "CTR": "mean",
+    "EngagementRate": "mean",
+    "CPC": "mean",
+    "ROI": "mean"
+}).reset_index()
+
+plt.figure(figsize=(10, 6))
+sns.barplot(data=grouped, x="Platform", y="CTR")
+plt.title("CTR by Platform")
+plt.ylabel("CTR")
+plt.xlabel("Platform")
+plt.tight_layout()
+plt.show()
+
+plt.figure(figsize=(10, 6))
+sns.barplot(data=grouped, x="Platform", y="ROI")
+plt.title("ROI by Platform")
+plt.ylabel("ROI")
+plt.xlabel("Platform")
+plt.tight_layout()
+plt.show()
